@@ -14,7 +14,6 @@ PURPLE='\033[1;35m'
 WHITE='\033[1;37m'
 GRAY='\033[1;30m'
 NC='\033[0m'
-BOLD='\033[1m'
 
 # --- UTILS ---
 pause(){ 
@@ -70,7 +69,7 @@ panel_menu(){
             5|05) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/panel/MythicalDash.sh) ;;
             6|06) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/panel/pelican.sh) ;;
             7|07) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/panel/cpanel.sh) ;;
-            0|00) break;;
+            0|00) return;; # Use Return to go back
             *) echo -e "${RED}   Invalid Option${NC}"; pause;;
         esac
     done
@@ -106,7 +105,7 @@ tools_menu(){
             7|07) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/tools/docker.sh) ;;
             8|08) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/tools/swap.sh) ;;
             9|09) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/tools/software.sh) ;;
-            0|00) break;;
+            0|00) return;; # Use Return to go back
             *) echo -e "${RED}   Invalid Option${NC}"; pause;;
         esac
     done
@@ -130,7 +129,7 @@ theme_menu(){
             1|01) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/theme/blueprint.sh) ;;
             2|02) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/theme/change.sh) ;;
             3|03) bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/theme/theme_uninstall.sh) ;;
-            0|00) break;;
+            0|00) return;; # Use Return to go back
             *) echo -e "${RED}   Invalid Option${NC}"; pause;;
         esac
     done
@@ -162,7 +161,8 @@ main_menu(){
                 echo -e ""
                 echo -e "${GREEN}   Thank you for using Vai Nodes Control Panel.${NC}"
                 echo -e "${CYAN}   Credits: Infinite21 & Staxxy Rai${NC}"
-                break
+                # Changed from break to exit 0 to fix the VS Code error
+                exit 0
                 ;;
             *) echo -e "${RED}   Invalid Option${NC}"; pause;;
         esac
@@ -170,5 +170,4 @@ main_menu(){
 }
 
 # ===================== EXECUTION START =====================
-# This line is critical to make the menu open
 main_menu
