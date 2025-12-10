@@ -100,7 +100,7 @@ install_nebula(){
     separator
     
     echo -e "${YELLOW}   Downloading Nebula Blueprint...${NC}"
-    wget -q https://github.com/nobita54/thm/raw/refs/heads/main/sc/nebula.blueprint
+    wget -q https://github.com/InfiniteandRaju/thm/raw/refs/heads/main/sc/nebula.blueprint
     
     echo -e "${YELLOW}   Installing (Auto-Confirming)...${NC}"
     # Auto-enter 'yes' for blueprint prompts
@@ -118,7 +118,7 @@ install_euphoria(){
     separator
     
     echo -e "${YELLOW}   Downloading Euphoria Blueprint...${NC}"
-    wget -q https://github.com/nobita54/thm/raw/refs/heads/main/sc/euphoriatheme.blueprint
+    wget -q https://github.com/InfiniteandRaju/thm/raw/refs/heads/main/sc/euphoriatheme.blueprint
     
     echo -e "${YELLOW}   Installing...${NC}"
     blueprint -i euphoriatheme
@@ -137,9 +137,9 @@ install_tools(){
     echo -e ""
 
     echo -e "${YELLOW}   1/3 Downloading assets...${NC}"
-    wget -q https://github.com/nobita54/thm/raw/refs/heads/main/sc/versionchanger.blueprint
-    wget -q https://github.com/nobita54/thm/raw/refs/heads/main/sc/mcplugins.blueprint
-    wget -q https://github.com/nobita54/thm/raw/refs/heads/main/sc/sagaminecraftplayermanager.blueprint
+    wget -q https://github.com/InfiniteandRaju/thm/raw/refs/heads/main/sc/versionchanger.blueprint
+    wget -q https://github.com/InfiniteandRaju/thm/raw/refs/heads/main/sc/mcplugins.blueprint
+    wget -q https://github.com/InfiniteandRaju/thm/raw/refs/heads/main/sc/sagaminecraftplayermanager.blueprint
 
     echo -e "${YELLOW}   2/3 Installing Blueprints...${NC}"
     blueprint -i versionchanger
