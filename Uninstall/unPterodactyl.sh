@@ -60,7 +60,7 @@ install_panel() {
     sleep 2
     
     # Run the external script as requested
-    bash <(curl -s https://raw.githubusercontent.com/nobita54/-150/refs/heads/main/panel/pterodactyl.sh)
+    bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/panel/Pterodactyl.sh)
 
     echo -e ""
     print_status "SUCCESS" "Installation sequence finished."
