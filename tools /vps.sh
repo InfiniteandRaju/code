@@ -1,103 +1,121 @@
 #!/bin/bash
-# ==========================================
-# VPS / VM MANAGER (Docker & IDX)
-# Made By: Infinite21 & Staxxy Rai
-# ==========================================
 
-# --- COLORS & STYLING ---
-RED='\033[1;31m'; GREEN='\033[1;32m'; YELLOW='\033[1;33m'; CYAN='\033[1;36m'; 
-BLUE='\033[1;34m'; PURPLE='\033[1;35m'; WHITE='\033[1;37m'; GRAY='\033[1;30m'; NC='\033[0m'
+# COLORS
+R="\e[31m"; G="\e[32m"; Y="\e[33m"; B="\e[34m"; C="\e[36m"; M="\e[35m"; W="\e[37m"; N="\e[0m"
 
-banner(){
-    clear
-    echo -e "${CYAN}"
-    echo -e "   ██╗   ██╗██████╗ ███████╗    ███╗   ███╗ ██████╗██████╗ "
-    echo -e "   ██║   ██║██╔══██╗██╔════╝    ████╗ ████║██╔════╝██╔══██╗"
-    echo -e "   ██║   ██║██████╔╝███████╗    ██╔████╔██║██║     ██████╔╝"
-    echo -e "   ╚██╗ ██╔╝██╔═══╝ ╚════██║    ██║╚██╔╝██║██║     ██╔══██╗"
-    echo -e "    ╚████╔╝ ██║     ███████║    ██║ ╚═╝ ██║╚██████╗██║  ██║"
-    echo -e "     ╚═══╝  ╚═╝     ╚══════╝    ╚═╝     ╚═╝ ╚═════╝╚═╝  ╚═╝"
-    echo -e "${NC}"
-    echo -e "${PURPLE}   ╔════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${PURPLE}   ║${WHITE}   Made By : ${CYAN}Infinite21 ${WHITE}& ${GREEN}Staxxy Rai   ${PURPLE}║${NC}"
-    echo -e "${PURPLE}   ╚════════════════════════════════════════════════════════╝${NC}"
-    echo -e ""
+# NEW UI STYLE FUNCTIONS
+print_box() {
+    local text="$1"
+    local color="$2"
+    local width=50
+    local padding=$(( (width - ${#text} - 2) / 2 ))
+    
+    echo -e "${color}┌$(printf '─%.0s' $(seq 1 $((width-2))))┐${N}"
+    printf "${color}│%*s%s%*s│${N}\n" $padding "" "$text" $((padding - ((${#text} % 2) ? 1 : 0))) ""
+    echo -e "${color}└$(printf '─%.0s' $(seq 1 $((width-2))))┘${N}"
 }
 
-# ===================== FUNCTIONS =====================
-
-# --- OPTION 1: VM LAUNCHER (DOCKER) ---
-run_vm_docker() {
+print_header() {
     clear
-    echo -e "${WHITE}   [ ${YELLOW}DOCKER VM LAUNCHER${WHITE} ]${NC}"
-    separator
-    
-    # Config
-    RAM=30000
-    CPU=7
-    DISK_SIZE=100G
-    CONTAINER_NAME=rai
-    IMAGE_NAME=rai/debain12
-    VMDATA_DIR="$PWD/vmdata"
-
-    # Check for Docker
-    if ! command -v docker &> /dev/null; then
-        echo -e "${RED}   Docker is not installed!${NC}"
-        echo -e "${YELLOW}   Please install Docker first or run the 'System Tools' menu.${NC}"
-        pause
-        return
-    fi
-
-    echo -e "${CYAN}   1. Configuring Directory...${NC}"
-    mkdir -p "$VMDATA_DIR"
-    echo -e "      → Created $VMDATA_DIR"
-
-    echo -e "${CYAN}   2. VM Configuration Set:${NC}"
-    echo -e "      ${PURPLE}RAM:${WHITE}  $RAM MB"
-    echo -e "      ${PURPLE}CPU:${WHITE}  $CPU Cores"
-    echo -e "      ${PURPLE}DISK:${WHITE} $DISK_SIZE"
-    echo -e "      ${PURPLE}IMG:${WHITE}  $IMAGE_NAME"
-
-    echo -e "${CYAN}   3. Launching Container...${NC}"
-    echo -e ""
-    docker run -it --rm \
-      --name "$CONTAINER_NAME" \
-      --device /dev/kvm \
-      -v "$VMDATA_DIR":/vmdata \
-      -e RAM="$RAM" \
-      -e CPU="$CPU" \
-      -e DISK_SIZE="$DISK_SIZE" \
-      "$IMAGE_NAME"
-
-    echo -e ""
-    echo -e "${GREEN}   VM Session Ended.${NC}"
-    pause
+    echo -e "\n${C}╔════════════════════════════════════════════════╗${N}"
+    echo -e "${C}║${W}           D E V E L O P M E N T   M E N U          ${C}║${N}"
+    echo -e "${C}╚════════════════════════════════════════════════╝${N}\n"
 }
 
-# --- OPTION 2: IDX TOOL ---
-setup_idx() {
-    clear
-    echo -e "${WHITE}   [ ${YELLOW}IDX TOOL SETUP${WHITE} ]${NC}"
-    separator
+print_option() {
+    local num="$1"
+    local text="$2"
+    local color="$3"
     
-    echo -e "${CYAN}   1. Cleaning environment...${NC}"
-    cd ~ || exit
-    rm -rf myapp flutter
-    echo -e "      → Removed old folders."
+    echo -e "  ${color}┌──────────────────────────────────────┐${N}"
+    echo -e "  ${color}│${W}  [$num]  $text$(printf '%*s' $((31 - ${#text} - 6)))${color}│${N}"
+    echo -e "  ${color}└──────────────────────────────────────┘${N}\n"
+}
 
-    # Ensure vm directory exists
-    if [ ! -d "vm" ]; then
-        mkdir -p vm
-        echo -e "      → Created ~/vm directory."
-    fi
-    cd vm || exit
+print_status() {
+    local text="$1"
+    local color="$2"
+    echo -e "\n${color}▶▶ ${text}${N}\n"
+}
 
-    echo -e "${CYAN}   2. Configuring .idx...${NC}"
-    if [ ! -d ".idx" ]; then
-        mkdir .idx
-        cd .idx || exit
-
-        cat <<EOF > dev.nix
+# MAIN MENU LOOP
+while true; do
+    print_header
+    
+    print_option "1" "GitHub / VM" "$G"
+    print_option "2" "Tool" "$Y"
+    print_option "3" "Run" "$B"
+    print_option "4" "Exit" "$R"
+    
+    echo -e "${M}════════════════════════════════════════════════${N}"
+    echo -ne "${W}Select Option → ${N}"
+    read -p "" op
+    
+    case $op in
+    
+    # =========================================================
+    # (1) VM Launcher - ENHANCED
+    # =========================================================
+    1)
+        clear
+        print_status "🚀 Starting VM Using Docker + KVM..." "$G"
+        echo -e "${M}════════════════════════════════════════════════${N}\n"
+        
+        RAM=15000
+        CPU=4
+        DISK_SIZE=100G
+        CONTAINER_NAME=hopingboyz
+        IMAGE_NAME=hopingboyz/debain12
+        VMDATA_DIR="$PWD/vmdata"
+        
+        echo -e "${Y}📁 Creating VM data directory...${N}"
+        mkdir -p "$VMDATA_DIR"
+        
+        echo -e "\n${C}📊 VM Configuration:${N}"
+        echo -e "${W}┌──────────────────────────────────────┐${N}"
+        echo -e "${W}│ ${G}RAM${W}        : ${Y}$RAM MB${W}                     │${N}"
+        echo -e "${W}│ ${G}CPU${W}        : ${Y}$CPU cores${W}                  │${N}"
+        echo -e "${W}│ ${G}DISK SIZE${W}  : ${Y}$DISK_SIZE${W}                  │${N}"
+        echo -e "${W}│ ${G}NAME${W}       : ${Y}$CONTAINER_NAME${W}             │${N}"
+        echo -e "${W}│ ${G}IMAGE${W}      : ${Y}$IMAGE_NAME${W}                 │${N}"
+        echo -e "${W}└──────────────────────────────────────┘${N}\n"
+        
+        echo -e "${C}▶ Launching VM...${N}"
+        docker run -it --rm \
+          --name "$CONTAINER_NAME" \
+          --device /dev/kvm \
+          -v "$VMDATA_DIR":/vmdata \
+          -e RAM="$RAM" \
+          -e CPU="$CPU" \
+          -e DISK_SIZE="$DISK_SIZE" \
+          "$IMAGE_NAME"
+        
+        echo -e "\n${M}════════════════════════════════════════════════${N}"
+        read -p "↩ Press Enter to return..."
+        ;;
+    
+    # =========================================================
+    # (2) IDX TOOL - ENHANCED
+    # =========================================================
+    2)
+        clear
+        print_status "🔧 Running IDX Tool Setup..." "$Y"
+        echo -e "${M}════════════════════════════════════════════════${N}\n"
+        
+        echo -e "${C}🧹 Cleaning up old files...${N}"
+        cd
+        rm -rf myapp
+        rm -rf flutter
+        
+        cd vm
+        
+        if [ ! -d ".idx" ]; then
+            echo -e "${G}📁 Creating .idx directory...${N}"
+            mkdir .idx
+            cd .idx
+            
+            echo -e "${C}📝 Creating dev.nix configuration...${N}"
+            cat <<EOF > dev.nix
 { pkgs, ... }: {
   channel = "stable-24.05";
 
@@ -133,53 +151,52 @@ setup_idx() {
   };
 }
 EOF
-        echo -e "${GREEN}      → dev.nix configuration created successfully.${NC}"
-        echo -e "${WHITE}      Location: ~/vm/.idx/dev.nix${NC}"
-    else
-        echo -e "${YELLOW}      → .idx directory already exists. Skipping.${NC}"
-    fi
-
-    pause
-}
-
-# --- OPTION 3: EXTERNAL SCRIPT ---
-run_external_script() {
-    clear
-    echo -e "${WHITE}   [ ${BLUE}RUNNING REMOTE VM SCRIPT${WHITE} ]${NC}"
-    separator
-    echo -e "${GRAY}   Credits: HopingBoyz(Best Youtuber)${NC}"
-    echo -e "${YELLOW}   Initializing...${NC}"
-    sleep 1
-    echo -e ""
+            
+            echo -e "\n${G}✅ IDX Tool setup complete!${N}"
+            echo -e "${W}┌──────────────────────────────────────┐${N}"
+            echo -e "${W}│ ${G}Status${W}: ${Y}Ready to use${W}                 │${N}"
+            echo -e "${W}│ ${G}Location${W}: ${Y}~/vps123/.idx${W}              │${N}"
+            echo -e "${W}└──────────────────────────────────────┘${N}"
+        else
+            echo -e "${Y}⚠ Directory .idx already exists — skipping.${N}"
+        fi
+        
+        echo -e "\n${M}════════════════════════════════════════════════${N}"
+        read -p "↩ Press Enter..."
+        ;;
     
-    bash <(curl -fsSL https://raw.githubusercontent.com/hopingboyz/vms/main/vm.sh)
+    # =========================================================
+    # (3) IDX VM — ENHANCED
+    # =========================================================
+    3)
+        clear
+        print_status "🌐 Starting IDX VM From GitHub Script..." "$B"
+        echo -e "${M}════════════════════════════════════════════════${N}\n"
+        
+        echo -e "${C}📡 Fetching script from GitHub...${N}"
+        
+        echo -e "\n${G}▶ Executing remote script...${N}"
+        bash <(curl -s https://raw.githubusercontent.com/InfiniteandRaju/code/refs/heads/main/tools/vm.sh)
+        
+        echo -e "\n${M}════════════════════════════════════════════════${N}"
+        read -p "↩ Press Enter..."
+        ;;
     
-    echo -e ""
-    pause
-}
-
-# ===================== MAIN MENU =====================
-while true; do
-    banner
-    echo -e "${WHITE}   [ ${GREEN}DEVELOPMENT / VM MENU${WHITE} ]${NC}"
-    separator
-    echo -e "${PURPLE}   [01] ${WHITE}GitHub / Docker VM Launcher"
-    echo -e "${PURPLE}   [02] ${WHITE}IDX Tool Configuration"
-    echo -e "${PURPLE}   [03] ${WHITE}Run VM Script (External)"
-    separator
-    echo -e "${RED}   [00] ${WHITE}Back / Exit"
-    echo -e ""
-    read -p "   Select Option → " op
-
-    case $op in
-        1|01) run_vm_docker ;;
-        2|02) setup_idx ;;
-        3|03) run_external_script ;;
-        0|00) 
-            echo -e "${GREEN}   Exiting VM Manager.${NC}"
-            exit 0 
-            ;;
-        *) 
-            echo -e "${RED}   Invalid Option${NC}"; sleep 1 ;;
+    # =========================================================
+    # EXIT - ENHANCED
+    # =========================================================
+    4)
+        clear
+        echo -e "\n${C}╔════════════════════════════════════════════════╗${N}"
+        echo -e "${C}║${R}                 E X I T I N G                  ${C}║${N}"
+        echo -e "${C}╚════════════════════════════════════════════════╝${N}\n"
+        echo -e "${Y}👋 Thank you for using the Development Menu!${N}\n"
+        exit 0
+        ;;
+    
+    *)
+        echo -e "\n${R}❌ Invalid Option! Please try again.${N}"
+        sleep 1
+        ;;
     esac
 done
